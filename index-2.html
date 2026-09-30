@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title></title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            #fffafa 0%,
+            #fce8ed 42%,
+            #f4d0d9 100%
+        );
+
+    touch-action: none;
+
+}
+
+
+/* =========================================
+   SCENE
+========================================= */
+
+.scene {
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    perspective: 1800px;
+
+    overflow: hidden;
+
+}
+
+
+/* soft light */
+
+.glow {
+
+    position: absolute;
+
+    width: 750px;
+    height: 520px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255,255,255,.9),
+            rgba(255,210,220,0)
+        );
+
+    filter: blur(35px);
+
+    pointer-events: none;
+
+}
+
+
+/* floor shadow */
+
+.shadow {
+
+    position: absolute;
+
+    bottom: 8%;
+
+    width: 600px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(100,45,60,.22),
+            transparent 70%
+        );
+
+    filter: blur(18px);
+
+}
+
+
+/* =========================================
+   3D BOUQUET
+========================================= */
+
+.bouquet {
+
+    position: relative;
+
+    width: min(680px, 88vw);
+    height: min(680px, 88vw);
+
+    transform-style: preserve-3d;
+
+    transform:
+        rotateX(-6deg)
+        rotateY(0deg);
+
+    cursor: grab;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    touch-action: none;
+
+}
+
+.bouquet.dragging {
+
+    cursor: grabbing;
+
+}
+
+
+/* =========================================
+   FRONT / BACK
+========================================= */
+
+.face {
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 30px;
+
+    overflow: hidden;
+
+    backface-visibility: hidden;
+
+    -webkit-backface-visibility: hidden;
+
+}
+
+
+/* actual bouquet artwork */
+
+.face canvas {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    pointer-events: none;
+
+}
+
+
+/* front */
+
+.front {
+
+    transform:
+        translateZ(22px);
+
+    filter:
+        drop-shadow(
+            0 30px 35px
+            rgba(100,40,60,.22)
+        );
+
+}
+
+
+/* back */
+
+.back {
+
+    transform:
+        rotateY(180deg)
+        translateZ(22px);
+
+}
+
+
+/* =========================================
+   3D THICKNESS
+========================================= */
+
+.edge {
+
+    position: absolute;
+
+    background:
+        linear-gradient(
+            90deg,
+            #cf7c91,
+            #efb5c1,
+            #cf7c91
+        );
+
+}
+
+
+/* top */
+
+.edge.top {
+
+    width: 100%;
+    height: 44px;
+
+    top: -22px;
+
+    transform:
+        rotateX(90deg);
+
+}
+
+
+/* bottom */
+
+.edge.bottom {
+
+    width: 100%;
+    height: 44px;
+
+    bottom: -22px;
+
+    transform:
+        rotateX(-90deg);
+
+}
+
+
+/* left */
+
+.edge.left {
+
+    width: 44px;
+    height: 100%;
+
+    left: -22px;
+
+    transform:
+        rotateY(-90deg);
+
+}
+
+
+/* right */
+
+.edge.right {
+
+    width: 44px;
+    height: 100%;
+
+    right: -22px;
+
+    transform:
+        rotateY(90deg);
+
+}
+
+
+/* =========================================
+   LETTER
+========================================= */
+
+.letter {
+
+    position: fixed;
+
+    z-index: 20;
+
+    left: 50%;
+
+    bottom: 6%;
+
+    transform:
+        translateX(-50%);
+
+    width: min(370px, 76vw);
+
+    padding: 22px 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffefa,
+            #f8eee5
+        );
+
+    border:
+        1px solid
+        rgba(120,75,75,.13);
+
+    box-shadow:
+        0 18px 45px
+        rgba(100,45,58,.16);
+
+    color: #6b3a43;
+
+    text-align: center;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(18px, 2.5vw, 25px);
+
+    line-height: 1.55;
+
+    opacity: 0;
+
+    animation:
+        appear 1.5s ease forwards;
+
+    animation-delay: 1.2s;
+
+    pointer-events: none;
+
+}
+
+
+@keyframes appear {
+
+    to {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:600px) {
+
+    .bouquet {
+
+        width: 94vw;
+        height: 94vw;
+
+    }
+
+    .letter {
+
+        width: 74vw;
+
+        font-size: 18px;
+
+        padding:
+            17px 12px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="scene">
+
+
+    <div class="glow"></div>
+
+
+    <div class="shadow"></div>
+
+
+    <!-- =====================================
+         3D OBJECT
+    ====================================== -->
+
+    <div
+        class="bouquet"
+        id="bouquet"
+    >
+
+
+        <!-- FRONT -->
+
+        <div class="face front">
+
+            <canvas
+                id="frontCanvas"
+                width="1000"
+                height="1000"
+            ></canvas>
+
+        </div>
+
+
+        <!-- BACK -->
+
+        <div class="face back">
+
+            <canvas
+                id="backCanvas"
+                width="1000"
+                height="1000"
+            ></canvas>
+
+        </div>
+
+
+        <!-- THICKNESS -->
+
+        <div class="edge top"></div>
+
+        <div class="edge bottom"></div>
+
+        <div class="edge left"></div>
+
+        <div class="edge right"></div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================
+     LETTER
+========================================= -->
+
+<div class="letter">
+
+    I am really sorry my love 🤍
+
+    <br>
+
+    ~ Hriday
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   FLOWER ART
+========================================================= */
+
+const SIZE = 1000;
+
+
+/* canvases */
+
+const front =
+    document.getElementById(
+        "frontCanvas"
+    );
+
+const back =
+    document.getElementById(
+        "backCanvas"
+    );
+
+
+const fctx =
+    front.getContext("2d");
+
+
+const bctx =
+    back.getContext("2d");
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+function drawBackground(ctx) {
+
+    const bg =
+        ctx.createRadialGradient(
+            500,
+            350,
+            30,
+            500,
+            500,
+            700
+        );
+
+
+    bg.addColorStop(
+        0,
+        "#fffefe"
+    );
+
+
+    bg.addColorStop(
+        .45,
+        "#fcebef"
+    );
+
+
+    bg.addColorStop(
+        1,
+        "#f2ced8"
+    );
+
+
+    ctx.fillStyle = bg;
+
+
+    ctx.fillRect(
+        0,
+        0,
+        SIZE,
+        SIZE
+    );
+
+
+    /* central soft glow */
+
+    const glow =
+        ctx.createRadialGradient(
+            500,
+            450,
+            10,
+            500,
+            450,
+            430
+        );
+
+
+    glow.addColorStop(
+        0,
+        "rgba(255,255,255,.75)"
+    );
+
+
+    glow.addColorStop(
+        1,
+        "rgba(255,255,255,0)"
+    );
+
+
+    ctx.fillStyle = glow;
+
+
+    ctx.fillRect(
+        0,
+        0,
+        SIZE,
+        SIZE
+    );
+
+}
+
+
+/* =========================================================
+   PETAL
+========================================================= */
+
+function petal(
+    ctx,
+    x,
+    y,
+    width,
+    height,
+    angle,
+    color
+) {
+
+    ctx.save();
+
+
+    ctx.translate(
+        x,
+        y
+    );
+
+
+    ctx.rotate(
+        angle
+    );
+
+
+    const gradient =
+        ctx.createRadialGradient(
+            -width*.2,
+            -height*.25,
+            2,
+            0,
+            0,
+            Math.max(width,height)
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "#fff7f9"
+    );
+
+
+    gradient.addColorStop(
+        .3,
+        color
+    );
+
+
+    gradient.addColorStop(
+        1,
+        color
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+
+    ctx.beginPath();
+
+
+    ctx.ellipse(
+        0,
+        0,
+        width,
+        height,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+
+    ctx.fill();
+
+
+    ctx.strokeStyle =
+        "rgba(120,45,65,.12)";
+
+
+    ctx.lineWidth = 2;
+
+
+    ctx.stroke();
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   ROSE
+========================================================= */
+
+function drawRose(
+    ctx,
+    cx,
+    cy,
+    scale
+) {
+
+
+    const colors = [
+
+        "#b93659",
+        "#c94465",
+        "#d95d79",
+        "#e8758e",
+        "#ee91a4"
+
+    ];
+
+
+    /* outer petals */
+
+    for (
+        let layer = 4;
+        layer >= 0;
+        layer--
+    ) {
+
+
+        const count =
+            layer === 4
+            ? 10
+            : 12;
+
+
+        const radius =
+            (65 + layer * 25)
+            * scale;
+
+
+        for (
+            let i = 0;
+            i < count;
+            i++
+        ) {
+
+
+            const angle =
+                (
+                    i / count
+                ) * Math.PI * 2
+                +
+                layer * .24;
+
+
+            const x =
+                cx +
+                Math.cos(angle)
+                * radius;
+
+
+            const y =
+                cy +
+                Math.sin(angle)
+                * radius
+                * .72;
+
+
+            petal(
+                ctx,
+                x,
+                y,
+                72 * scale,
+                110 * scale,
+                angle + Math.PI / 2,
+                colors[
+                    (i + layer)
+                    % colors.length
+                ]
+            );
+
+        }
+
+    }
+
+
+    /* center */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        54 * scale,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#a92e4e";
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx - 13 * scale,
+        cy - 14 * scale,
+        30 * scale,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#f08fa5";
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx + 8 * scale,
+        cy + 7 * scale,
+        18 * scale,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#8e2442";
+
+    ctx.fill();
+
+}
+
+
+/* =========================================================
+   LILY
+========================================================= */
+
+function drawLily(
+    ctx,
+    cx,
+    cy,
+    scale
+) {
+
+
+    const colors = [
+
+        "#f8d6df",
+        "#f4c4d0",
+        "#fbe1e8"
+
+    ];
+
+
+    /* six petals */
+
+    for (
+        let i = 0;
+        i < 6;
+        i++
+    ) {
+
+
+        const angle =
+            i *
+            Math.PI /
+            3;
+
+
+        const x =
+            cx +
+            Math.cos(angle)
+            * 72
+            * scale;
+
+
+        const y =
+            cy +
+            Math.sin(angle)
+            * 72
+            * scale;
+
+
+        petal(
+            ctx,
+            x,
+            y,
+            58 * scale,
+            135 * scale,
+            angle,
+            colors[i % 3]
+        );
+
+    }
+
+
+    /* center */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        38 * scale,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#efbd86";
+
+    ctx.fill();
+
+
+    /* stamens */
+
+    for (
+        let i = 0;
+        i < 6;
+        i++
+    ) {
+
+
+        const angle =
+            i *
+            Math.PI /
+            3;
+
+
+        ctx.strokeStyle =
+            "#9e5a54";
+
+
+        ctx.lineWidth =
+            6 * scale;
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            cx +
+            Math.cos(angle)
+            * 10
+            * scale,
+
+            cy +
+            Math.sin(angle)
+            * 10
+            * scale
+        );
+
+
+        ctx.lineTo(
+            cx +
+            Math.cos(angle)
+            * 65
+            * scale,
+
+            cy +
+            Math.sin(angle)
+            * 65
+            * scale
+        );
+
+
+        ctx.stroke();
+
+
+        ctx.fillStyle =
+            "#8d4a48";
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+            cx +
+            Math.cos(angle)
+            * 70
+            * scale,
+
+            cy +
+            Math.sin(angle)
+            * 70
+            * scale,
+
+            7 * scale,
+
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+    }
+
+}
+
+
+/* =========================================================
+   STEM
+========================================================= */
+
+function stem(
+    ctx,
+    x,
+    y,
+    endX,
+    endY
+) {
+
+
+    const gradient =
+        ctx.createLinearGradient(
+            x,
+            y,
+            endX,
+            endY
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "#315a3d"
+    );
+
+
+    gradient.addColorStop(
+        .5,
+        "#70936a"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "#416a49"
+    );
+
+
+    ctx.strokeStyle =
+        gradient;
+
+
+    ctx.lineWidth =
+        17;
+
+
+    ctx.lineCap =
+        "round";
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+        x,
+        y
+    );
+
+
+    ctx.quadraticCurveTo(
+        (x + endX) / 2,
+        (y + endY) / 2,
+        endX,
+        endY
+    );
+
+
+    ctx.stroke();
+
+}
+
+
+/* =========================================================
+   LEAF
+========================================================= */
+
+function leaf(
+    ctx,
+    x,
+    y,
+    scale,
+    angle
+) {
+
+
+    ctx.save();
+
+
+    ctx.translate(
+        x,
+        y
+    );
+
+
+    ctx.rotate(
+        angle
+    );
+
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            150 * scale,
+            0
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "#315a3d"
+    );
+
+
+    gradient.addColorStop(
+        .5,
+        "#73976c"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "#416b49"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+        0,
+        0
+    );
+
+
+    ctx.quadraticCurveTo(
+        70 * scale,
+        -55 * scale,
+        145 * scale,
+        0
+    );
+
+
+    ctx.quadraticCurveTo(
+        70 * scale,
+        55 * scale,
+        0,
+        0
+    );
+
+
+    ctx.fill();
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   FULL BOUQUET
+========================================================= */
+
+function drawBouquet(
+    ctx
+) {
+
+
+    drawBackground(
+        ctx
+    );
+
+
+    /*
+       BACK STEMS
+    */
+
+    stem(
+        ctx,
+        400,
+        750,
+        350,
+        300
+    );
+
+
+    stem(
+        ctx,
+        500,
+        750,
+        500,
+        240
+    );
+
+
+    stem(
+        ctx,
+        600,
+        750,
+        650,
+        300
+    );
+
+
+    stem(
+        ctx,
+        330,
+        760,
+        250,
+        400
+    );
+
+
+    stem(
+        ctx,
+        670,
+        760,
+        730,
+        390
+    );
+
+
+    /*
+       LEAVES
+    */
+
+    leaf(
+        ctx,
+        360,
+        650,
+        .9,
+        -0.8
+    );
+
+
+    leaf(
+        ctx,
+        540,
+        650,
+        .9,
+        2.7
+    );
+
+
+    leaf(
+        ctx,
+        620,
+        600,
+        .8,
+        -0.5
+    );
+
+
+    leaf(
+        ctx,
+        290,
+        650,
+        .75,
+        -2.6
+    );
+
+
+    leaf(
+        ctx,
+        650,
+        680,
+        .75,
+        2.7
+    );
+
+
+    /*
+       ROSES
+    */
+
+    drawRose(
+        ctx,
+        315,
+        310,
+        1.05
+    );
+
+
+    drawRose(
+        ctx,
+        500,
+        225,
+        1.28
+    );
+
+
+    drawRose(
+        ctx,
+        685,
+        320,
+        1.05
+    );
+
+
+    drawRose(
+        ctx,
+        445,
+        390,
+        .82
+    );
+
+
+    /*
+       LILIES
+    */
+
+    drawLily(
+        ctx,
+        205,
+        455,
+        .92
+    );
+
+
+    drawLily(
+        ctx,
+        790,
+        455,
+        .92
+    );
+
+
+    drawLily(
+        ctx,
+        565,
+        380,
+        .72
+    );
+
+
+    /*
+       BOUQUET WRAP
+    */
+
+    ctx.fillStyle =
+        "#b8526c";
+
+
+    ctx.beginPath();
+
+
+    ctx.roundRect(
+        395,
+        700,
+        180,
+        75,
+        25
+    );
+
+
+    ctx.fill();
+
+
+    ctx.fillStyle =
+        "#e5a0b0";
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+        410,
+        750
+    );
+
+
+    ctx.lineTo(
+        475,
+        750
+    );
+
+
+    ctx.lineTo(
+        450,
+        900
+    );
+
+
+    ctx.lineTo(
+        400,
+        900
+    );
+
+
+    ctx.closePath();
+
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+        500,
+        750
+    );
+
+
+    ctx.lineTo(
+        560,
+        750
+    );
+
+
+    ctx.lineTo(
+        610,
+        900
+    );
+
+
+    ctx.lineTo(
+        555,
+        900
+    );
+
+
+    ctx.closePath();
+
+
+    ctx.fill();
+
+
+}
+
+
+/* =========================================================
+   DRAW BOTH SIDES
+========================================================= */
+
+drawBouquet(
+    fctx
+);
+
+
+drawBouquet(
+    bctx
+);
+
+
+/* =========================================================
+   360° MANUAL ROTATION
+========================================================= */
+
+const bouquet =
+    document.getElementById(
+        "bouquet"
+    );
+
+
+let rotationY = 0;
+
+let rotationX = -6;
+
+let targetY = 0;
+
+let targetX = -6;
+
+
+let dragging =
+    false;
+
+
+let lastX = 0;
+
+let lastY = 0;
+
+
+/* =========================================
+   START DRAG
+========================================= */
+
+function startDrag(
+    x,
+    y
+) {
+
+    dragging =
+        true;
+
+
+    lastX =
+        x;
+
+
+    lastY =
+        y;
+
+
+    bouquet.classList.add(
+        "dragging"
+    );
+
+}
+
+
+/* =========================================
+   DRAG
+========================================= */
+
+function drag(
+    x,
+    y
+) {
+
+
+    if (!dragging)
+        return;
+
+
+    const dx =
+        x - lastX;
+
+
+    const dy =
+        y - lastY;
+
+
+    /*
+       HORIZONTAL:
+
+       Rotate around the entire Y axis.
+
+       Keep dragging in the same direction
+       and you can go:
+
+       0°
+       90°
+       180°
+       270°
+       360°
+       720°
+       etc.
+    */
+
+    targetY +=
+        dx * 0.75;
+
+
+    /*
+       VERTICAL:
+
+       Tilt the bouquet.
+    */
+
+    targetX -=
+        dy * 0.45;
+
+
+    targetX =
+        Math.max(
+            -55,
+            Math.min(
+                55,
+                targetX
+            )
+        );
+
+
+    lastX =
+        x;
+
+
+    lastY =
+        y;
+
+}
+
+
+/* =========================================
+   END DRAG
+========================================= */
+
+function endDrag() {
+
+    dragging =
+        false;
+
+
+    bouquet.classList.remove(
+        "dragging"
+    );
+
+}
+
+
+/* =========================================
+   MOUSE
+========================================= */
+
+bouquet.addEventListener(
+    "pointerdown",
+    event => {
+
+        event.preventDefault();
+
+        startDrag(
+            event.clientX,
+            event.clientY
+        );
+
+
+        bouquet.setPointerCapture(
+            event.pointerId
+        );
+
+    }
+);
+
+
+bouquet.addEventListener(
+    "pointermove",
+    event => {
+
+        event.preventDefault();
+
+
+        drag(
+            event.clientX,
+            event.clientY
+        );
+
+    }
+);
+
+
+bouquet.addEventListener(
+    "pointerup",
+    endDrag
+);
+
+
+bouquet.addEventListener(
+    "pointercancel",
+    endDrag
+);
+
+
+/* =========================================
+   TOUCH
+========================================= */
+
+bouquet.addEventListener(
+    "touchstart",
+    event => {
+
+        if (
+            event.touches.length !== 1
+        )
+            return;
+
+
+        const touch =
+            event.touches[0];
+
+
+        startDrag(
+            touch.clientX,
+            touch.clientY
+        );
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+bouquet.addEventListener(
+    "touchmove",
+    event => {
+
+        if (
+            event.touches.length !== 1
+        )
+            return;
+
+
+        event.preventDefault();
+
+
+        const touch =
+            event.touches[0];
+
+
+        drag(
+            touch.clientX,
+            touch.clientY
+        );
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+bouquet.addEventListener(
+    "touchend",
+    endDrag,
+    {
+        passive: true
+    }
+);
+
+
+/* =========================================================
+   SMOOTH MOVEMENT
+========================================================= */
+
+function animate() {
+
+
+    /*
+       IMPORTANT:
+
+       There is NO automatic movement.
+
+       If nobody touches the bouquet:
+
+       targetY = current Y
+       targetX = current X
+
+       Therefore the bouquet stays still.
+    */
+
+
+    rotationY +=
+        (
+            targetY -
+            rotationY
+        ) * 0.16;
+
+
+    rotationX +=
+        (
+            targetX -
+            rotationX
+        ) * 0.16;
+
+
+    bouquet.style.transform =
+
+        `
+        rotateX(${rotationX}deg)
+        rotateY(${rotationY}deg)
+        `;
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+animate();
+
+</script>
+
+</body>
+</html>
